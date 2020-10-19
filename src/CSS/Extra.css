@@ -1,0 +1,18 @@
+.main-body {
+	display: flex;
+	padding-bottom: 30px;
+	padding-left: 60px;
+}
+
+.icon-div {
+	color: lightgray;
+	font-size: 30px;
+	padding-right: 10px;
+}
+.title {
+	color: lightgray;
+	display: flex;
+}
+.info {
+	font-weight: bold;
+}

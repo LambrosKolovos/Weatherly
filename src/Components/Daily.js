@@ -1,6 +1,6 @@
 import React from 'react';
 import "../CSS/Daily.css";
-import {WiRainWind} from 'react-icons/wi';
+import weatherIcon from '../weatherIcon.js';
 
 const isToday = (str) => {
     if(str === 'True')
@@ -15,7 +15,7 @@ export const Daily = ( {day, icon, max, min, bool} ) => {
                 {day}
             </div>
             <div style={{fontSize: "40px"}}>
-                <WiRainWind/>
+                {weatherIcon(icon)}
             </div>
             <div style={{fontWeight: "600", fontSize: "25px"}}>
                 {max}°C

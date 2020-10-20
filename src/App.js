@@ -54,6 +54,7 @@ class App extends Component{
     feels_like: 0,
     weather_status: "",
     weather_description: "",
+    daily_status: [],
     lat: 0,
     lon: 0,
     humidity: 0,
@@ -83,11 +84,13 @@ class App extends Component{
       weather_status: res1.weather[0].main,
       weather_description: res1.weather[0].description,
       weekly_temps_max: [],
-      weekly_temps_min: []
+      weekly_temps_min: [],
+      daily_status: []
     })
 
     const weeklyWeather = fetch(URL_WEEKLY + "lat=" + this.state.lat + "&lon=" + this.state.lon + weeklyOnly + API_KEY)
     const res2 = await (await weeklyWeather).json()
+    console.log(res2)
 
     this.setState({
       humidity: res2.daily[0].humidity,
@@ -104,8 +107,13 @@ class App extends Component{
       }),
       mapping_var: res2.daily.map(item => {
         this.state.weekly_temps_max.push(convertToCelcious(item.temp.max))
+      }),
+      mapping_var: res2.daily.map(item => {
+        this.state.daily_status.push(item.weather[0].main)
       })
     })
+
+    console.log(this.state.daily_status)
 
     this.setState({
       daytime: this.state.sunset - this.state.sunrise
@@ -114,10 +122,6 @@ class App extends Component{
     let totalTime = this.state.daytime
     let hour = getHour(totalTime);
     let minute = getMinutes(totalTime - hour*3600);
-
-    console.log(totalTime)
-    console.log(hour)
-    console.log(minute)
 
     this.setState({
       daytime: hour + "h " + minute + "m",
@@ -164,13 +168,26 @@ class App extends Component{
           </div>
         </div>
         <div className={this.state.visible? `lower-body fade` : 'hide-lower'}>
-          <Daily day={this.state.weekdays[0]} icon="Temp" max={this.state.weekly_temps_max[0]} min={this.state.weekly_temps_min[0]} bool="True"/>
-          <Daily day={this.state.weekdays[1]} icon="Temp" max={this.state.weekly_temps_max[1]} min={this.state.weekly_temps_min[1]} />
-          <Daily day={this.state.weekdays[2]} icon="Temp" max={this.state.weekly_temps_max[2]} min={this.state.weekly_temps_min[2]} />
-          <Daily day={this.state.weekdays[3]} icon="Temp" max={this.state.weekly_temps_max[3]} min={this.state.weekly_temps_min[3]} />
-          <Daily day={this.state.weekdays[4]} icon="Temp" max={this.state.weekly_temps_max[4]} min={this.state.weekly_temps_min[4]} />
-          <Daily day={this.state.weekdays[5]} icon="Temp" max={this.state.weekly_temps_max[5]} min={this.state.weekly_temps_min[5]} />
-          <Daily day={this.state.weekdays[6]} icon="Temp" max={this.state.weekly_temps_max[6]} min={this.state.weekly_temps_min[6]} />
+          <Daily day={this.state.weekdays[0]} icon={this.state.daily_status[0]}
+           max={this.state.weekly_temps_max[0]} min={this.state.weekly_temps_min[0]} bool="True"/>
+          
+          <Daily day={this.state.weekdays[1]} icon={this.state.daily_status[1]} 
+          max={this.state.weekly_temps_max[1]} min={this.state.weekly_temps_min[1]} />
+          
+          <Daily day={this.state.weekdays[2]} icon={this.state.daily_status[2]}
+           max={this.state.weekly_temps_max[2]} min={this.state.weekly_temps_min[2]} />
+          
+          <Daily day={this.state.weekdays[3]} icon={this.state.daily_status[3]}
+           max={this.state.weekly_temps_max[3]} min={this.state.weekly_temps_min[3]} />
+          
+          <Daily day={this.state.weekdays[4]} icon={this.state.daily_status[4]}
+           max={this.state.weekly_temps_max[4]} min={this.state.weekly_temps_min[4]} />
+         
+          <Daily day={this.state.weekdays[5]} icon={this.state.daily_status[5]}
+           max={this.state.weekly_temps_max[5]} min={this.state.weekly_temps_min[5]} />
+         
+          <Daily day={this.state.weekdays[6]} icon={this.state.daily_status[6]}
+           max={this.state.weekly_temps_max[6]} min={this.state.weekly_temps_min[6]} />
         </div>
 
       </div>

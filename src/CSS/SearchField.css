@@ -1,6 +1,6 @@
 .search-field {
 	outline: none;
-	padding: 20px;
+	padding: 10px;
 	padding-left: 20px;
 	padding-right: 80px;
 	background: transparent;
@@ -21,7 +21,6 @@
 }
 
 .search-button {
-	height: 100%;
 	outline: none;
 	padding-right: 20px;
 	background: transparent;

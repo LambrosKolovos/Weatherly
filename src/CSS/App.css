@@ -39,11 +39,9 @@
 }
 
 .search-city {
-	height: 13%;
 	padding-top: 30px;
-	display: flex;
-
-	justify-content: center;
+	display: block;
+	text-align: center;
 	width: 50%;
 }
 
@@ -72,6 +70,16 @@
 	height: 45%;
 	visibility: hidden;
 }
+
+.warn {
+	padding-top: 10px;
+	color: black;
+}
+
+.warn-hide {
+	visibility: hidden;
+}
+
 @keyframes fadeInOpacity {
 	0% {
 		opacity: 0;

@@ -47,6 +47,7 @@ class App extends Component{
 
   state = {
     visible: false,
+    warning: false,
     input: "",
     city_name: "",
     country: "",
@@ -69,11 +70,7 @@ class App extends Component{
     weekly_temps_max: []
   };
   
-  buttonClick = async () => {
-  
-    const currentWeather = fetch(URL_CURRENT + this.state.input + API_KEY)
-    const res1 = await (await currentWeather).json()
-
+  display_current_weather = (res1) => {
     this.setState({
       city_name: this.state.input,
       lat: res1.coord.lat,
@@ -87,12 +84,15 @@ class App extends Component{
       weekly_temps_min: [],
       daily_status: []
     })
+  }
 
+  weekly_weather_call = async () => {
     const weeklyWeather = fetch(URL_WEEKLY + "lat=" + this.state.lat + "&lon=" + this.state.lon + weeklyOnly + API_KEY)
     const res2 = await (await weeklyWeather).json()
     console.log(res2)
 
     this.setState({
+      warning: false,
       humidity: res2.daily[0].humidity,
       chance_of_rain: res2.daily[0].pop * 100,
       speed: res2.daily[0].wind_speed,
@@ -113,8 +113,6 @@ class App extends Component{
       })
     })
 
-    console.log(this.state.daily_status)
-
     this.setState({
       daytime: this.state.sunset - this.state.sunrise
     })
@@ -127,18 +125,42 @@ class App extends Component{
       daytime: hour + "h " + minute + "m",
       visible: true
     })
+  }
+
+  buttonClick = async () => {
   
+    const currentWeather = fetch(URL_CURRENT + this.state.input + API_KEY)
+    const res1 = await (await currentWeather).json()
+
+    if(res1.cod === 200){
+      this.display_current_weather(res1)
+      this.weekly_weather_call()
+    }
+    else{
+      this.setState({
+        warning: true
+      })
+    }
   }
 
   enterFunction = (e) => {
     if(e.key === 'Enter'){
-      this.buttonClick()
+      console.log(this.state.input)
+      if(this.state.input.trim() !== ""){
+        this.buttonClick()
+      }
+      else{
+        this.setState({
+          warning: true
+        })
+      }
     }
   }
 
   getText = (e) => {
     this.setState({
-      input: e.target.value
+      input: e.target.value,
+      warning: false
     })
   }
 
@@ -159,7 +181,9 @@ class App extends Component{
           </div>
           <div className="search-city">
             <SearchField inputFunction={this.getText} enterFunction={this.enterFunction} clickFunction={this.buttonClick}/>
+            <div className={this.state.warning? `warn` : 'warn-hide'}>No such city found!</div>
           </div>
+          
           <div className={this.state.visible? 'extras fade': 'hide-upper'}>
             <Extra title="Humidity" info={this.state.humidity} iconName="humidity" type="percent"></Extra>
             <Extra title="Chance of Rain" info={this.state.chance_of_rain} iconName="rain" type="percent"></Extra>

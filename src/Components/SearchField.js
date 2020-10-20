@@ -6,7 +6,7 @@ import {BsSearch} from 'react-icons/bs'
 
 const SearchField = ({inputFunction, enterFunction, clickFunction}) => {
 return (
-		<div style={{display: "flex"}}>
+		<div style={{display: "inline-flex"}}>
             <input 
                 className="search-field" 
                 placeholder="City name"

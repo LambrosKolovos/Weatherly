@@ -7,7 +7,7 @@ import Daily from "./Components/Daily.js";
 
 const URL_CURRENT = 'https://api.openweathermap.org/data/2.5/weather?q=';
 const URL_WEEKLY = 'https://api.openweathermap.org/data/2.5/onecall?';
-const weeklyOnly = '&exclude=current,minutely,hourly,alerts';
+const weeklyOnly = '&exclude=minutely,hourly,alerts';
 const API_KEY = '&appid=fa8ad03028a76823bc81af28b4cf6716';
 
 const convertToCelcious = (temp) => {
@@ -22,9 +22,20 @@ const getMinutes = (seconds) => {
     return Math.round(seconds / 60);
 }
 
-const getWeekDay = () => {
-  var day = new Date();
-  var week = new Array(
+const getWeekDay = (zone) => {
+
+  //Get local time
+  var d = new Date()
+  var localTime = d.getTime()
+  var localOffset = d.getTimezoneOffset() * 60000
+  var UTC = localTime + localOffset
+
+  //Convert to city fetched time
+  var city_searched_time = UTC + (1000 * zone)  
+  var day = new Date(city_searched_time);
+  
+  console.log(day.getDay());
+  var week = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -32,11 +43,13 @@ const getWeekDay = () => {
     "Thursday",
     "Friday",
     "Saturday"
-  );
+  ];
 
-  var result = new Array()
+  var result =[] 
  
   for (let i = 0; i < week.length; i++) {
+    if( i === 0)
+      console.log("Week starting from: " + week[(day.getDay() + i) % 7])
     result.push(week[(day.getDay() + i) % 7]);
   }
 
@@ -55,6 +68,7 @@ class App extends Component{
     feels_like: 0,
     weather_status: "",
     weather_description: "",
+    timestamp: 0,
     daily_status: [],
     lat: 0,
     lon: 0,
@@ -80,6 +94,7 @@ class App extends Component{
       feels_like: convertToCelcious(res1.main.feels_like),
       weather_status: res1.weather[0].main,
       weather_description: res1.weather[0].description,
+      weekdays: [],
       weekly_temps_max: [],
       weekly_temps_min: [],
       daily_status: []
@@ -89,17 +104,18 @@ class App extends Component{
   weekly_weather_call = async () => {
     const weeklyWeather = fetch(URL_WEEKLY + "lat=" + this.state.lat + "&lon=" + this.state.lon + weeklyOnly + API_KEY)
     const res2 = await (await weeklyWeather).json()
-    console.log(res2)
+    //console.log(res2)
 
     this.setState({
       warning: false,
+
       humidity: res2.daily[0].humidity,
       chance_of_rain: res2.daily[0].pop * 100,
       speed: res2.daily[0].wind_speed,
       sunrise: res2.daily[0].sunrise,
       sunset: res2.daily[0].sunset,
       
-      mapping_var: getWeekDay().map(item => {
+      mapping_var: getWeekDay(res2.timezone_offset).map(item => {
         this.state.weekdays.push(item)
       }),
       mapping_var: res2.daily.map(item => {
@@ -113,6 +129,8 @@ class App extends Component{
       })
     })
 
+    console.log(res2)
+    console.log("Timestamp: " + res2.current.dt)
     this.setState({
       daytime: this.state.sunset - this.state.sunrise
     })
@@ -145,7 +163,6 @@ class App extends Component{
 
   enterFunction = (e) => {
     if(e.key === 'Enter'){
-      console.log(this.state.input)
       if(this.state.input.trim() !== ""){
         this.buttonClick()
       }

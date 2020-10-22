@@ -1,7 +1,7 @@
 import React from 'react'
 import weatherIcon from "../weatherIcon.js"
 
-const Preview = ({type, description, city, country, temperature, feelslike}) => {
+const Preview = ({type, description, city, country, temperature, feelslike, time}) => {
     return (
         <div>
             <div style={{fontSize: "40px"}}>
@@ -13,10 +13,13 @@ const Preview = ({type, description, city, country, temperature, feelslike}) => 
             <div style={{fontSize: "20px", color:"#222222"}}>
                 {city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()}, {country}
             </div>
-            <div style={{fontSize: "35px", fontWeight: "900"}}>
+            <div style={{fontSize: "40px", fontWeight: "900"}}>
                 {temperature}°C
             </div>
-            <div style={{fontSize: "14px"}}>Feels like: {feelslike}°C</div>
+            <div style={{fontSize: "16px"}}>Feels like: {feelslike}°C</div>
+            <div style={{paddingTop: "25px", fontSize: "35px", color: "#222222"}}>
+                {time}
+            </div>
         </div>
     )
 }

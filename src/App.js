@@ -22,8 +22,7 @@ const getMinutes = (seconds) => {
     return Math.round(seconds / 60);
 }
 
-const getWeekDay = (zone) => {
-
+const getCurrentDay = (zone) => {
   //Get local time
   var d = new Date()
   var localTime = d.getTime()
@@ -33,8 +32,25 @@ const getWeekDay = (zone) => {
   //Convert to city fetched time
   var city_searched_time = UTC + (1000 * zone)  
   var day = new Date(city_searched_time);
+
+  return day;
+
+}
+
+const getCurrentTime = (day) => {
+  var time = day.toLocaleTimeString()
+  var meridiem = " "
+
+  if(day.getHours() > 11)
+    meridiem = " PM"
+  else
+    meridiem = " AM"
+    
+  return time.slice(0, 4) + meridiem
   
-  console.log(day.getDay());
+}
+
+const getWeekDay = (day) => {
   var week = [
     "Sunday",
     "Monday",
@@ -48,9 +64,7 @@ const getWeekDay = (zone) => {
   var result =[] 
  
   for (let i = 0; i < week.length; i++) {
-    if( i === 0)
-      console.log("Week starting from: " + week[(day.getDay() + i) % 7])
-    result.push(week[(day.getDay() + i) % 7]);
+      result.push(week[(day.getDay() + i) % 7]);
   }
 
   return result;
@@ -69,6 +83,7 @@ class App extends Component{
     weather_status: "",
     weather_description: "",
     timestamp: 0,
+    localtime: "",
     daily_status: [],
     lat: 0,
     lon: 0,
@@ -104,7 +119,7 @@ class App extends Component{
   weekly_weather_call = async () => {
     const weeklyWeather = fetch(URL_WEEKLY + "lat=" + this.state.lat + "&lon=" + this.state.lon + weeklyOnly + API_KEY)
     const res2 = await (await weeklyWeather).json()
-    //console.log(res2)
+    
 
     this.setState({
       warning: false,
@@ -114,9 +129,10 @@ class App extends Component{
       speed: res2.daily[0].wind_speed,
       sunrise: res2.daily[0].sunrise,
       sunset: res2.daily[0].sunset,
+      localtime: getCurrentTime(getCurrentDay(res2.timezone_offset))
     })
 
-      getWeekDay(res2.timezone_offset).map(item => {
+      getWeekDay(getCurrentDay(res2.timezone_offset)).map(item => {
         return this.state.weekdays.push(item)
       });
       res2.daily.map(item => {
@@ -129,8 +145,6 @@ class App extends Component{
         return this.state.daily_status.push(item.weather[0].main)
       });
 
-    console.log(res2)
-    console.log("Timestamp: " + res2.current.dt)
     this.setState({
       daytime: this.state.sunset - this.state.sunrise
     })
@@ -198,10 +212,11 @@ class App extends Component{
               country={this.state.country}
               temperature={this.state.current_temp}
               feelslike={this.state.feels_like}
+              time={this.state.localtime}
             />
           </div>
           <div className="search-city">
-            <SearchField inputFunction={this.getText} enterFunction={this.enterFunction} clickFunction={this.buttonClick}/>
+             <SearchField inputFunction={this.getText} enterFunction={this.enterFunction} clickFunction={this.buttonClick}/>
             <div className={this.state.warning? `warn` : 'warn-hide'}>No such city found!</div>
           </div>     
           <div className={this.state.visible? 'extras fade': 'hide-upper'}>
@@ -233,7 +248,7 @@ class App extends Component{
             <Daily day={this.state.weekdays[6]} icon={this.state.daily_status[6]}
             max={this.state.weekly_temps_max[6]} min={this.state.weekly_temps_min[6]} onClick={this.dayClicked} />
           </div>
-        </div>
+        </div> 
     );
   }
 }

@@ -3,14 +3,16 @@ import "../CSS/Daily.css";
 import weatherIcon from '../weatherIcon.js';
 
 const isToday = (str) => {
-    if(str === 'True')
-        return true;
+    if(str === 'first')
+        return `daily-card today`;
+    else if(str === 'second')
+        return `daily-card second-day`;
     else
-        return false;
+        return `daily-card`;
 }
-export const Daily = ( {day, icon, max, min, bool} ) => {
+export const Daily = ( {day, icon, max, min, onClick, bool} ) => {
     return (
-        <div className={isToday(bool)? `daily-card today` : `daily-card`}>
+        <div className={isToday(bool)} onClick={onClick}>
             <div style={{paddingBottom: "10px"}}>
                 {day}
             </div>

@@ -110,24 +110,24 @@ class App extends Component{
       warning: false,
 
       humidity: res2.daily[0].humidity,
-      chance_of_rain: res2.daily[0].pop * 100,
+      chance_of_rain: Math.round(res2.daily[0].pop * 100),
       speed: res2.daily[0].wind_speed,
       sunrise: res2.daily[0].sunrise,
       sunset: res2.daily[0].sunset,
-      
-      mapping_var: getWeekDay(res2.timezone_offset).map(item => {
-        this.state.weekdays.push(item)
-      }),
-      mapping_var: res2.daily.map(item => {
-        this.state.weekly_temps_min.push(convertToCelcious(item.temp.min))
-      }),
-      mapping_var: res2.daily.map(item => {
-        this.state.weekly_temps_max.push(convertToCelcious(item.temp.max))
-      }),
-      mapping_var: res2.daily.map(item => {
-        this.state.daily_status.push(item.weather[0].main)
-      })
     })
+
+      getWeekDay(res2.timezone_offset).map(item => {
+        return this.state.weekdays.push(item)
+      });
+      res2.daily.map(item => {
+        return this.state.weekly_temps_min.push(convertToCelcious(item.temp.min))
+      });
+      res2.daily.map(item => {
+        return this.state.weekly_temps_max.push(convertToCelcious(item.temp.max))
+      });
+      res2.daily.map(item => {
+        return this.state.daily_status.push(item.weather[0].main)
+      });
 
     console.log(res2)
     console.log("Timestamp: " + res2.current.dt)
@@ -177,8 +177,12 @@ class App extends Component{
   getText = (e) => {
     this.setState({
       input: e.target.value,
-      warning: false
+      warning: false,
     })
+  }
+
+  dayClicked = (e) => {
+    console.log("Clicked a day!")
   }
 
 
@@ -199,8 +203,7 @@ class App extends Component{
           <div className="search-city">
             <SearchField inputFunction={this.getText} enterFunction={this.enterFunction} clickFunction={this.buttonClick}/>
             <div className={this.state.warning? `warn` : 'warn-hide'}>No such city found!</div>
-          </div>
-          
+          </div>     
           <div className={this.state.visible? 'extras fade': 'hide-upper'}>
             <Extra title="Humidity" info={this.state.humidity} iconName="humidity" type="percent"></Extra>
             <Extra title="Chance of Rain" info={this.state.chance_of_rain} iconName="rain" type="percent"></Extra>
@@ -208,30 +211,29 @@ class App extends Component{
             <Extra title="Daytime" info={this.state.daytime} iconName="daytime"></Extra>
           </div>
         </div>
-        <div className={this.state.visible? `lower-body fade` : 'hide-lower'}>
-          <Daily day={this.state.weekdays[0]} icon={this.state.daily_status[0]}
-           max={this.state.weekly_temps_max[0]} min={this.state.weekly_temps_min[0]} bool="True"/>
+          <div className={this.state.visible? `lower-body fade` : 'hide-lower'}>
+            <Daily day={this.state.weekdays[0]} icon={this.state.daily_status[0]}
+            max={this.state.weekly_temps_max[0]} min={this.state.weekly_temps_min[0]} onClick={this.dayClicked} bool="first"/>
+            
+            <Daily day={this.state.weekdays[1]} icon={this.state.daily_status[1]} 
+            max={this.state.weekly_temps_max[1]} min={this.state.weekly_temps_min[1]} onClick={this.dayClicked} bool="second"/>
+            
+            <Daily day={this.state.weekdays[2]} icon={this.state.daily_status[2]}
+            max={this.state.weekly_temps_max[2]} min={this.state.weekly_temps_min[2]} onClick={this.dayClicked} />
+            
+            <Daily day={this.state.weekdays[3]} icon={this.state.daily_status[3]}
+            max={this.state.weekly_temps_max[3]} min={this.state.weekly_temps_min[3]} onClick={this.dayClicked}/>
+            
+            <Daily day={this.state.weekdays[4]} icon={this.state.daily_status[4]}
+            max={this.state.weekly_temps_max[4]} min={this.state.weekly_temps_min[4]} onClick={this.dayClicked}/>
           
-          <Daily day={this.state.weekdays[1]} icon={this.state.daily_status[1]} 
-          max={this.state.weekly_temps_max[1]} min={this.state.weekly_temps_min[1]} />
+            <Daily day={this.state.weekdays[5]} icon={this.state.daily_status[5]}
+            max={this.state.weekly_temps_max[5]} min={this.state.weekly_temps_min[5]} onClick={this.dayClicked} />
           
-          <Daily day={this.state.weekdays[2]} icon={this.state.daily_status[2]}
-           max={this.state.weekly_temps_max[2]} min={this.state.weekly_temps_min[2]} />
-          
-          <Daily day={this.state.weekdays[3]} icon={this.state.daily_status[3]}
-           max={this.state.weekly_temps_max[3]} min={this.state.weekly_temps_min[3]} />
-          
-          <Daily day={this.state.weekdays[4]} icon={this.state.daily_status[4]}
-           max={this.state.weekly_temps_max[4]} min={this.state.weekly_temps_min[4]} />
-         
-          <Daily day={this.state.weekdays[5]} icon={this.state.daily_status[5]}
-           max={this.state.weekly_temps_max[5]} min={this.state.weekly_temps_min[5]} />
-         
-          <Daily day={this.state.weekdays[6]} icon={this.state.daily_status[6]}
-           max={this.state.weekly_temps_max[6]} min={this.state.weekly_temps_min[6]} />
+            <Daily day={this.state.weekdays[6]} icon={this.state.daily_status[6]}
+            max={this.state.weekly_temps_max[6]} min={this.state.weekly_temps_min[6]} onClick={this.dayClicked} />
+          </div>
         </div>
-
-      </div>
     );
   }
 }

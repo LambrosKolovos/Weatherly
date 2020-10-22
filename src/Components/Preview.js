@@ -10,7 +10,7 @@ const Preview = ({type, description, city, country, temperature, feelslike}) => 
             <div style={{fontWeight: "bold", fontSize: "20px", paddingBottom: "25px"}}>
                 {description.charAt(0).toUpperCase() + description.slice(1)}
             </div>
-            <div style={{fontSize: "20px"}}>
+            <div style={{fontSize: "20px", color:"#222222"}}>
                 {city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()}, {country}
             </div>
             <div style={{fontSize: "35px", fontWeight: "900"}}>

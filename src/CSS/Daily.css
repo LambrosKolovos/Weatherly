@@ -14,6 +14,10 @@
 	transform: scale(1.3);
 }
 
+.second-day {
+	margin-left: 15px;
+}
+
 .daily-card:hover {
 	transform: scale(1.3);
 	transition: transform 0.4s;
